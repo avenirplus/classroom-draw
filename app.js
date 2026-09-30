@@ -66,6 +66,20 @@ function newClass(){
   className.focus();className.select();
 }
 function switchClass(id){capture();persist();state.activeId=id;persist();loadProfile()}
+function deleteCurrentClass(){
+  const p=current();if(!p)return;
+  const label=p.name==='クラスを設定'?'この未設定クラス':`「${p.name}」`;
+  if(!confirm(`${label}を削除しますか？\n欠席設定・指名履歴・MISSION設定も削除されます。`))return;
+  delete state.profiles[state.activeId];
+  const ids=Object.keys(state.profiles);
+  if(!ids.length){
+    const next=freshProfile('クラスを設定');
+    state.profiles[next.id]=next;state.activeId=next.id;
+  }else{
+    state.activeId=ids[0];
+  }
+  persist();loadProfile();flashLabel('クラスを削除しました');
+}
 
 function absentSet(){return new Set(current()?.absent||[])}
 function pool(){
@@ -209,6 +223,7 @@ el('absenceBtn').onclick=openAbsence;
 el('saveAbsenceBtn').onclick=()=>{capture();persist()};
 el('saveClassBtn').onclick=saveCurrent;
 el('newClassBtn').onclick=newClass;
+el('deleteClassBtn').onclick=deleteCurrentClass;
 classSelect.onchange=e=>switchClass(e.target.value);
 el('settingsToggle').onclick=()=>{const p=el('settingsPanel');p.classList.toggle('hidden');el('settingsToggle').textContent=p.classList.contains('hidden')?'設定を開く':'設定を閉じる'};
 el('undoBtn').onclick=()=>{const p=current();if(p.history.length){p.history.pop();renderHistory();persist();flashLabel('1回戻しました')}};
