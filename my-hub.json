@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "title": "CLASSROOM DRAW",
+  "category": "Tools",
+  "summary": "授業で使える、出席番号ベースの盛り上がるくじ引き・指名アプリ。",
+  "tags": ["授業", "抽選", "出席番号", "英語", "教員"],
+  "color": "blue",
+  "status": "active",
+  "visibility": "limited",
+  "manualUrl": "manual.html"
+}
