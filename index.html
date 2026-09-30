@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CLASSROOM DRAW</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">CLASSROOM DRAW</p>
+        <h1>WHO'S NEXT?</h1>
+      </div>
+      <button id="helpBtn" class="ghost-btn" aria-label="使い方を開く">？ 使い方</button>
+    </header>
+
+    <section class="status-row">
+      <label>
+        クラス
+        <input id="className" type="text" value="1年3組" maxlength="24" />
+      </label>
+      <label>
+        人数
+        <input id="studentCount" type="number" min="1" max="60" value="40" />
+      </label>
+      <button id="absenceBtn" class="soft-btn">欠席を設定</button>
+    </section>
+
+    <section class="stage" aria-live="polite">
+      <div class="mode-tabs" role="tablist">
+        <button class="mode active" data-mode="normal">通常</button>
+        <button class="mode" data-mode="survival">サバイバル</button>
+        <button class="mode" data-mode="mission">MISSION</button>
+      </div>
+
+      <p id="stageLabel" class="stage-label">READY</p>
+      <div id="numberDisplay" class="number-display">--</div>
+      <div id="missionDisplay" class="mission-display hidden"></div>
+
+      <button id="drawBtn" class="draw-btn">DRAW!</button>
+
+      <div class="mini-actions">
+        <button id="undoBtn" class="ghost-btn">1回戻す</button>
+        <button id="resetRoundBtn" class="ghost-btn">今日の履歴をリセット</button>
+      </div>
+    </section>
+
+    <section class="teacher-panel">
+      <div class="panel-head">
+        <h2>先生用</h2>
+        <button id="settingsToggle" class="ghost-btn">設定を開く</button>
+      </div>
+
+      <div id="settingsPanel" class="settings hidden">
+        <label class="toggle-row">
+          <span>一度当たった人を次回以降除外</span>
+          <input id="excludeDrawn" type="checkbox" checked />
+        </label>
+        <label class="toggle-row">
+          <span>効果音</span>
+          <input id="soundOn" type="checkbox" checked />
+        </label>
+        <label class="toggle-row">
+          <span>LUCKY SAFEを使う</span>
+          <input id="luckySafe" type="checkbox" />
+        </label>
+        <label>
+          MISSION候補（1行1件）
+          <textarea id="missionList" rows="7">答えを説明する
+英文を音読する
+日本語に訳す
+理由を1つ言う
+隣の人に質問する
+例文を1つ作る</textarea>
+        </label>
+      </div>
+
+      <div class="history-wrap">
+        <div>
+          <span class="history-label">今日の指名</span>
+          <strong id="drawCount">0回</strong>
+        </div>
+        <div id="historyChips" class="chips"></div>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="absenceDialog">
+    <form method="dialog" class="dialog-card">
+      <h2>欠席番号</h2>
+      <p>欠席者をタップしてください。</p>
+      <div id="absenceGrid" class="absence-grid"></div>
+      <div class="dialog-actions">
+        <button value="cancel" class="ghost-btn">閉じる</button>
+        <button id="saveAbsenceBtn" value="default" class="soft-btn">保存</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="confettiLayer" class="confetti-layer" aria-hidden="true"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
