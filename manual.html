@@ -1,11 +1,73 @@
 <!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CLASSROOM DRAW 使い方</title><link rel="stylesheet" href="style.css"></head>
-<body><main class="app-shell"><header class="topbar"><div><p class="eyebrow">CLASSROOM DRAW</p><h1>使い方</h1></div><a class="ghost-btn" href="index.html" style="text-decoration:none">アプリへ戻る</a></header>
-<section class="teacher-panel"><h2>このアプリは何をする？</h2><p>授業中に出席番号をランダムで選び、発表・音読・回答などの指名を盛り上げるためのアプリです。</p></section>
-<section class="teacher-panel"><h2>まずこれだけ</h2><ol><li>クラス名と人数を確認します。</li><li>欠席者がいれば「欠席を設定」で番号をタップします。</li><li>モードを選んで「DRAW!」を押します。</li></ol></section>
-<section class="teacher-panel"><h2>3つのモード</h2><p><strong>通常：</strong>高速で番号が切り替わり、最後に1人決まります。</p><p><strong>サバイバル：</strong>候補人数が減り、最後の3人から1人を選びます。</p><p><strong>MISSION：</strong>番号に加えて、音読・説明などのミッションも抽選します。</p></section>
-<section class="teacher-panel"><h2>先生用設定</h2><p>「一度当たった人を次回以降除外」をONにすると、未指名の生徒を優先できます。全員が一度当たると再び全員が候補になります。</p><p>MISSION候補は1行に1件ずつ自由に編集できます。</p></section>
-<section class="teacher-panel"><h2>データ</h2><p>クラス名、人数、欠席番号、設定、指名履歴はこのブラウザ内に保存されます。別の端末には自動同期されません。</p></section>
-<section class="teacher-panel"><h2>間違えたとき</h2><p>「1回戻す」で最後の指名履歴を1件取り消せます。「今日の履歴をリセット」でその日の履歴を消せます。</p></section>
-<section class="teacher-panel"><h2>スマホ・PC</h2><p>スマホでも使えますが、教室ではPCをプロジェクターに映す使い方を想定しています。番号は後方からでも見やすい大きさで表示されます。</p></section>
-</main></body></html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CLASSROOM DRAW 使い方</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="app-shell">
+  <header class="topbar">
+    <div><p class="eyebrow">CLASSROOM DRAW</p><h1>使い方</h1></div>
+    <a class="ghost-btn" href="index.html" style="text-decoration:none">アプリへ戻る</a>
+  </header>
+
+  <section class="teacher-panel">
+    <h2>このアプリは何をする？</h2>
+    <p>授業中に出席番号を抽選して、発表・音読・回答などの指名を楽しく行うアプリです。名前は登録せず、出席番号だけで使えます。</p>
+  </section>
+
+  <section class="teacher-panel">
+    <h2>まずこれだけ</h2>
+    <ol>
+      <li>クラス名と人数を設定して「クラス保存」を押します。</li>
+      <li>欠席者がいれば「欠席を設定」で番号をタップします。</li>
+      <li>SLOT / ROULETTE / SURVIVAL / MISSION を選び、「DRAW!」を押します。</li>
+    </ol>
+  </section>
+
+  <section class="teacher-panel">
+    <h2>4つの抽選モード</h2>
+    <p><strong>SLOT：</strong>番号が高速で切り替わり、少しずつ減速して1人決まります。</p>
+    <p><strong>ROULETTE：</strong>カラフルなルーレットが回転し、停止して番号を発表します。</p>
+    <p><strong>SURVIVAL：</strong>候補が段階的に減り、FINAL 3から最後の1人を選びます。</p>
+    <p><strong>MISSION：</strong>番号決定後に「英文を音読」「理由を言う」などのミッションも抽選します。</p>
+  </section>
+
+  <section class="teacher-panel">
+    <h2>クラス保存</h2>
+    <p>複数クラスを保存できます。「新規」で別クラスを作り、クラス名・人数・欠席番号・指名履歴・設定をクラスごとに保持します。</p>
+    <p>上部のクラス選択から、保存したクラスをすぐ切り替えられます。</p>
+  </section>
+
+  <section class="teacher-panel">
+    <h2>公平に当てる</h2>
+    <p>「一度当たった人を次回以降除外」をONにすると、そのクラスでまだ指名されていない番号を優先します。全員が一巡したあとは再び全員が候補になります。</p>
+    <p>欠席番号は抽選候補から常に除外されます。</p>
+  </section>
+
+  <section class="teacher-panel">
+    <h2>演出</h2>
+    <p>抽選中のクリック音、決定ファンファーレ、MISSION音、サバイバル効果音、紙吹雪があります。音が不要な場合は設定からOFFにできます。</p>
+    <p>LUCKY SAFEをONにすると、まれに「今回はセーフ」が発生します。通常はOFFです。</p>
+  </section>
+
+  <section class="teacher-panel">
+    <h2>間違えたとき</h2>
+    <p>「1回戻す」で最後の指名を1件取り消せます。「今日の履歴をリセット」で、そのクラスの当日履歴を消せます。</p>
+  </section>
+
+  <section class="teacher-panel">
+    <h2>データ</h2>
+    <p>クラス設定、欠席番号、指名履歴、MISSION候補などは、このブラウザのlocalStorageに保存されます。別端末には自動同期されません。</p>
+    <p>生徒名などの個人情報は登録しない設計です。</p>
+  </section>
+
+  <section class="teacher-panel">
+    <h2>教室でのおすすめ</h2>
+    <p>PCをプロジェクターに映し、中央のDRAW!を押すだけで使えます。キーボード入力欄を選択していない状態では、EnterまたはSpaceでも抽選できます。</p>
+  </section>
+</main>
+</body>
+</html>
