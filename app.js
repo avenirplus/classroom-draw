@@ -18,7 +18,8 @@ function migrate(){
   try{data=JSON.parse(localStorage.getItem(STORE_KEY)||'null')}catch{}
   if(data&&data.profiles){state.profiles=data.profiles;state.activeId=data.activeId&&data.profiles[data.activeId]?data.activeId:Object.keys(data.profiles)[0];return}
   let old={};try{old=JSON.parse(localStorage.getItem('classroomDrawState')||'{}')}catch{}
-  const p=freshProfile(old.className||'クラスを設定');
+  const legacyName=(old.className&&old.className!=='1年3組')?old.className:'クラスを設定';
+  const p=freshProfile(legacyName);
   p.count=old.count||40;p.absent=old.absent||[];p.history=old.history||[];
   if(typeof old.excludeDrawn==='boolean')p.excludeDrawn=old.excludeDrawn;
   if(typeof old.soundOn==='boolean')p.soundOn=old.soundOn;
@@ -47,6 +48,10 @@ function loadProfile(){
   settings.excludeDrawn.checked=p.excludeDrawn!==false;settings.soundOn.checked=p.soundOn!==false;
   settings.luckySafe.checked=!!p.luckySafe;settings.missionList.value=p.missionList||DEFAULT_MISSIONS.join('\n');
   renderClassSelect();renderClassSummary();renderHistory();resetStage();
+  if(p.name==='クラスを設定'){
+    const panel=el('settingsPanel');panel.classList.remove('hidden');
+    el('settingsToggle').textContent='設定を閉じる';
+  }
 }
 function renderClassSummary(){
   const p=current();if(!p)return;
