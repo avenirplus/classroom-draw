@@ -1,5 +1,5 @@
 const el=id=>document.getElementById(id);
-const classSelect=el('classSelect'),className=el('className'),studentCount=el('studentCount');
+const classSelect=el('classSelect'),className=el('className'),studentCount=el('studentCount'),classSummary=el('classSummary');
 const numberDisplay=el('numberDisplay'),stageLabel=el('stageLabel'),drawBtn=el('drawBtn');
 const historyChips=el('historyChips'),drawCount=el('drawCount'),missionDisplay=el('missionDisplay');
 const rouletteWheel=el('rouletteWheel');
@@ -10,7 +10,7 @@ const STORE_KEY='classroomDrawV2';
 const state={mode:'normal',busy:false,activeId:null,profiles:{}};
 
 function uid(){return 'class-'+Date.now()+'-'+Math.random().toString(36).slice(2,6)}
-function freshProfile(name='1年3組'){return{id:uid(),name,count:40,absent:[],history:[],excludeDrawn:true,soundOn:true,luckySafe:false,missionList:DEFAULT_MISSIONS.join('\n')}}
+function freshProfile(name='クラスを設定'){return{id:uid(),name,count:40,absent:[],history:[],excludeDrawn:true,soundOn:true,luckySafe:false,missionList:DEFAULT_MISSIONS.join('\n')}}
 function current(){return state.profiles[state.activeId]}
 
 function migrate(){
@@ -18,7 +18,7 @@ function migrate(){
   try{data=JSON.parse(localStorage.getItem(STORE_KEY)||'null')}catch{}
   if(data&&data.profiles){state.profiles=data.profiles;state.activeId=data.activeId&&data.profiles[data.activeId]?data.activeId:Object.keys(data.profiles)[0];return}
   let old={};try{old=JSON.parse(localStorage.getItem('classroomDrawState')||'{}')}catch{}
-  const p=freshProfile(old.className||'1年3組');
+  const p=freshProfile(old.className||'クラスを設定');
   p.count=old.count||40;p.absent=old.absent||[];p.history=old.history||[];
   if(typeof old.excludeDrawn==='boolean')p.excludeDrawn=old.excludeDrawn;
   if(typeof old.soundOn==='boolean')p.soundOn=old.soundOn;
@@ -29,7 +29,7 @@ function migrate(){
 function persist(){localStorage.setItem(STORE_KEY,JSON.stringify({activeId:state.activeId,profiles:state.profiles}))}
 function capture(){
   const p=current();if(!p)return;
-  p.name=className.value.trim()||'名称未設定';
+  p.name=className.value.trim()||'クラスを設定';
   p.count=Math.max(1,Math.min(60,+studentCount.value||1));
   p.excludeDrawn=settings.excludeDrawn.checked;p.soundOn=settings.soundOn.checked;
   p.luckySafe=settings.luckySafe.checked;p.missionList=settings.missionList.value;
@@ -43,17 +43,21 @@ function renderClassSelect(){
 }
 function loadProfile(){
   const p=current();if(!p)return;
-  className.value=p.name;studentCount.value=p.count;
+  className.value=p.name==='クラスを設定'?'':p.name;studentCount.value=p.count;
   settings.excludeDrawn.checked=p.excludeDrawn!==false;settings.soundOn.checked=p.soundOn!==false;
   settings.luckySafe.checked=!!p.luckySafe;settings.missionList.value=p.missionList||DEFAULT_MISSIONS.join('\n');
-  renderClassSelect();renderHistory();resetStage();
+  renderClassSelect();renderClassSummary();renderHistory();resetStage();
+}
+function renderClassSummary(){
+  const p=current();if(!p)return;
+  classSummary.textContent='最大'+p.count+'番';
 }
 function saveCurrent(){
-  capture();persist();renderClassSelect();flashLabel('クラスを保存しました');
+  capture();persist();renderClassSelect();renderClassSummary();flashLabel('クラスを保存しました');
 }
 function newClass(){
   capture();persist();
-  const p=freshProfile('新しいクラス');state.profiles[p.id]=p;state.activeId=p.id;persist();loadProfile();
+  const p=freshProfile('クラスを設定');state.profiles[p.id]=p;state.activeId=p.id;persist();loadProfile();
   className.focus();className.select();
 }
 function switchClass(id){capture();persist();state.activeId=id;persist();loadProfile()}
