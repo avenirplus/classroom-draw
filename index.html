@@ -24,16 +24,7 @@
         クラス
         <select id="classSelect" aria-label="保存クラス"></select>
       </label>
-      <label>
-        クラス名
-        <input id="className" type="text" value="1年3組" maxlength="24" />
-      </label>
-      <button id="saveClassBtn" class="soft-btn">クラス保存</button>
-      <button id="newClassBtn" class="ghost-btn">新規</button>
-      <label>
-        人数
-        <input id="studentCount" type="number" min="1" max="60" value="40" />
-      </label>
+      <strong id="classSummary" class="class-summary">最大40番</strong>
       <button id="absenceBtn" class="soft-btn">欠席を設定</button>
     </section>
 
@@ -65,6 +56,20 @@
       </div>
 
       <div id="settingsPanel" class="settings hidden">
+        <div class="class-settings">
+          <label>
+            クラス名
+            <input id="className" type="text" value="" maxlength="24" placeholder="例：1年A組" />
+          </label>
+          <label>
+            最大出席番号
+            <input id="studentCount" type="number" min="1" max="60" value="40" />
+          </label>
+          <div class="class-setting-actions">
+            <button id="saveClassBtn" class="soft-btn" type="button">このクラスを保存</button>
+            <button id="newClassBtn" class="ghost-btn" type="button">＋ 新しいクラス</button>
+          </div>
+        </div>
         <label class="toggle-row">
           <span>一度当たった人を次回以降除外</span>
           <input id="excludeDrawn" type="checkbox" checked />
