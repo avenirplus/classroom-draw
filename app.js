@@ -3,14 +3,14 @@ const classSelect=el('classSelect'),className=el('className'),studentCount=el('s
 const numberDisplay=el('numberDisplay'),stageLabel=el('stageLabel'),drawBtn=el('drawBtn');
 const historyChips=el('historyChips'),drawCount=el('drawCount'),missionDisplay=el('missionDisplay');
 const rouletteWheel=el('rouletteWheel');
-const settings={excludeDrawn:el('excludeDrawn'),soundOn:el('soundOn'),luckySafe:el('luckySafe'),missionList:el('missionList')};
+const settings={drawSeconds:el('drawSeconds'),excludeDrawn:el('excludeDrawn'),soundOn:el('soundOn'),luckySafe:el('luckySafe'),missionList:el('missionList')};
 
 const DEFAULT_MISSIONS=['答えを説明する','英文を音読する','日本語に訳す','理由を1つ言う','隣の人に質問する','例文を1つ作る'];
 const STORE_KEY='classroomDrawV2';
 const state={mode:'normal',busy:false,activeId:null,profiles:{}};
 
 function uid(){return 'class-'+Date.now()+'-'+Math.random().toString(36).slice(2,6)}
-function freshProfile(name='クラスを設定'){return{id:uid(),name,count:40,absent:[],history:[],excludeDrawn:true,soundOn:true,luckySafe:false,missionList:DEFAULT_MISSIONS.join('\n')}}
+function freshProfile(name='クラスを設定'){return{id:uid(),name,count:40,drawSeconds:3,absent:[],history:[],excludeDrawn:true,soundOn:true,luckySafe:false,missionList:DEFAULT_MISSIONS.join('\n')}}
 function current(){return state.profiles[state.activeId]}
 
 function migrate(){
@@ -32,6 +32,7 @@ function capture(){
   const p=current();if(!p)return;
   p.name=className.value.trim()||'クラスを設定';
   p.count=Math.max(1,Math.min(60,+studentCount.value||1));
+  p.drawSeconds=Math.max(1,Math.min(15,+settings.drawSeconds.value||3));
   p.excludeDrawn=settings.excludeDrawn.checked;p.soundOn=settings.soundOn.checked;
   p.luckySafe=settings.luckySafe.checked;p.missionList=settings.missionList.value;
 }
@@ -45,6 +46,7 @@ function renderClassSelect(){
 function loadProfile(){
   const p=current();if(!p)return;
   className.value=p.name==='クラスを設定'?'':p.name;studentCount.value=p.count;
+  settings.drawSeconds.value=p.drawSeconds||3;
   settings.excludeDrawn.checked=p.excludeDrawn!==false;settings.soundOn.checked=p.soundOn!==false;
   settings.luckySafe.checked=!!p.luckySafe;settings.missionList.value=p.missionList||DEFAULT_MISSIONS.join('\n');
   renderClassSelect();renderClassSummary();renderHistory();resetStage();
@@ -55,7 +57,7 @@ function loadProfile(){
 }
 function renderClassSummary(){
   const p=current();if(!p)return;
-  classSummary.textContent='最大'+p.count+'番';
+  classSummary.textContent='最大'+p.count+'番 · '+(p.drawSeconds||3)+'秒';
 }
 function saveCurrent(){
   capture();persist();renderClassSelect();renderClassSummary();flashLabel('クラスを保存しました');
@@ -120,35 +122,54 @@ function fanfare(){
 }
 function missionSound(){tone(660,.1,'triangle',.05);tone(880,.12,'triangle',.05,.1);tone(1108,.2,'triangle',.05,.22)}
 
+function drawDurationMs(){
+  return Math.max(1000,Math.min(15000,Math.round((+settings.drawSeconds.value||3)*1000)));
+}
 async function animateSlot(arr){
   rouletteWheel.classList.add('hidden');numberDisplay.classList.remove('hidden');stageLabel.textContent='SLOT SPIN!';
-  for(let i=0;i<30;i++){
-    numberDisplay.textContent=String(pick(arr)).padStart(2,'0');tick(i);await sleep(38+Math.floor(i*4.8));
+  const total=drawDurationMs();
+  const frames=Math.max(12,Math.min(90,Math.round(total/90)));
+  const weights=Array.from({length:frames},(_,i)=>0.45+1.1*(i/(frames-1||1)));
+  const sum=weights.reduce((a,b)=>a+b,0);
+  for(let i=0;i<frames;i++){
+    numberDisplay.textContent=String(pick(arr)).padStart(2,'0');tick(i);
+    await sleep(total*weights[i]/sum);
   }
   return pick(arr);
 }
 async function animateRoulette(arr){
   numberDisplay.classList.add('hidden');rouletteWheel.classList.remove('hidden');
   const center=rouletteWheel.querySelector('.wheel-center');center.textContent='?';
+  const total=drawDurationMs();
+  rouletteWheel.style.animationDuration=total+'ms';
   rouletteWheel.classList.remove('spin');void rouletteWheel.offsetWidth;rouletteWheel.classList.add('spin');
   stageLabel.textContent='ROULETTE!';
-  for(let i=0;i<20;i++){tick(i);await sleep(85+Math.floor(i*5))}
-  const winner=pick(arr);await sleep(500);center.textContent=String(winner).padStart(2,'0');fanfare();await sleep(500);
+  const ticks=Math.max(10,Math.min(55,Math.round(total/100)));
+  for(let i=0;i<ticks;i++){tick(i);await sleep(total/ticks)}
+  const winner=pick(arr);
+  center.textContent=String(winner).padStart(2,'0');fanfare();
   return winner;
 }
 async function animateSurvival(arr){
   rouletteWheel.classList.add('hidden');numberDisplay.classList.remove('hidden');stageLabel.textContent='SURVIVAL START!';
-  let survivors=[...arr];
+  const total=drawDurationMs();
+  let survivors=[...arr],rounds=[];
   while(survivors.length>3){
     survivors=survivors.sort(()=>Math.random()-.5).slice(0,Math.max(3,Math.ceil(survivors.length*.58)));
-    numberDisplay.textContent=survivors.length;popSound();await sleep(420);
+    rounds.push([...survivors]);
   }
+  const reduceTime=rounds.length?total*.68:0;
+  const perRound=rounds.length?reduceTime/rounds.length:0;
+  for(const list of rounds){
+    numberDisplay.textContent=list.length;popSound();await sleep(perRound);
+  }
+  const finalists=survivors;
   stageLabel.textContent='FINAL 3';suspense();
   numberDisplay.style.fontSize='clamp(3rem,10vw,7rem)';
-  numberDisplay.textContent=survivors.map(n=>String(n).padStart(2,'0')).join(' · ');
-  await sleep(1300);
+  numberDisplay.textContent=finalists.map(n=>String(n).padStart(2,'0')).join(' · ');
+  await sleep(total-reduceTime);
   numberDisplay.style.fontSize='';
-  return pick(survivors);
+  return pick(finalists);
 }
 async function animateMission(arr){return animateSlot(arr)}
 
@@ -229,6 +250,6 @@ el('settingsToggle').onclick=()=>{const p=el('settingsPanel');p.classList.toggle
 el('undoBtn').onclick=()=>{const p=current();if(p.history.length){p.history.pop();renderHistory();persist();flashLabel('1回戻しました')}};
 el('resetRoundBtn').onclick=()=>{if(confirm('このクラスの今日の指名履歴をリセットしますか？')){current().history=[];renderHistory();persist();resetStage()}};
 el('helpBtn').onclick=()=>location.href='manual.html';
-[className,studentCount,settings.excludeDrawn,settings.soundOn,settings.luckySafe,settings.missionList].forEach(x=>x.addEventListener('change',()=>{capture();persist()}));
+[className,studentCount,settings.drawSeconds,settings.excludeDrawn,settings.soundOn,settings.luckySafe,settings.missionList].forEach(x=>x.addEventListener('change',()=>{capture();persist()}));
 document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&!['INPUT','TEXTAREA','SELECT','BUTTON'].includes(document.activeElement?.tagName)){e.preventDefault();draw()}});
 migrate();loadProfile();
