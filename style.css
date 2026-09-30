@@ -18,3 +18,6 @@ button,input,select,textarea{font:inherit}.app-shell{max-width:1140px;margin:0 a
 
 .danger-btn{min-height:44px;padding:10px 15px;border-radius:14px;border:2px solid #ffd7df;background:#fff1f4;color:#b43b61;font-weight:900;cursor:pointer;box-shadow:0 5px 14px rgba(180,59,97,.08)}
 .danger-btn:hover{background:#ffe3ea}
+
+.settings input[type="number"]{width:120px;min-height:46px;background:#fff;color:var(--ink);border:2px solid #eadff0;border-radius:14px;padding:10px 13px;outline:none;font-weight:900}
+.settings input[type="number"]:focus{border-color:var(--purple);box-shadow:0 0 0 4px rgba(172,140,255,.15)}
