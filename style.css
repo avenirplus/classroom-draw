@@ -26,6 +26,6 @@ button,input,select,textarea{font:inherit}.app-shell{max-width:1140px;margin:0 a
 .route-draw-btn{min-height:50px;padding:12px 22px;border:3px solid #fff;border-radius:18px;background:linear-gradient(135deg,#ffd95f,#ff9fc5,#ac8cff);color:#4a375d;font-weight:1000;font-size:1.05rem;cursor:pointer;box-shadow:0 8px 0 #8b6e9c,0 14px 24px rgba(80,55,105,.16)}
 .route-draw-btn:active{transform:translateY(5px);box-shadow:0 3px 0 #8b6e9c}
 .route-draw-btn:disabled{opacity:.55;cursor:not-allowed}
-.route-result{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px}
+.route-result{width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:12px}
 .route-result span{display:grid;place-items:center;min-height:74px;padding:12px;border:3px solid #fff;border-radius:20px;background:rgba(255,255,255,.9);color:#553f68;font-size:clamp(1.2rem,3.4vw,2rem);font-weight:1000;box-shadow:0 10px 24px rgba(80,55,105,.12)}
-@media(max-width:600px){.route-result{grid-template-columns:1fr}.route-result span{min-height:62px}}
+@media(max-width:700px){.route-result{grid-template-columns:1fr}.route-result span{min-height:62px}}
