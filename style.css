@@ -21,3 +21,11 @@ button,input,select,textarea{font:inherit}.app-shell{max-width:1140px;margin:0 a
 
 .settings input[type="number"]{width:120px;min-height:46px;background:#fff;color:var(--ink);border:2px solid #eadff0;border-radius:14px;padding:10px 13px;outline:none;font-weight:900}
 .settings input[type="number"]:focus{border-color:var(--purple);box-shadow:0 0 0 4px rgba(172,140,255,.15)}
+
+.route-panel{z-index:2;width:min(680px,92vw);margin-top:18px;display:grid;gap:12px;justify-items:center}
+.route-draw-btn{min-height:50px;padding:12px 22px;border:3px solid #fff;border-radius:18px;background:linear-gradient(135deg,#ffd95f,#ff9fc5,#ac8cff);color:#4a375d;font-weight:1000;font-size:1.05rem;cursor:pointer;box-shadow:0 8px 0 #8b6e9c,0 14px 24px rgba(80,55,105,.16)}
+.route-draw-btn:active{transform:translateY(5px);box-shadow:0 3px 0 #8b6e9c}
+.route-draw-btn:disabled{opacity:.55;cursor:not-allowed}
+.route-result{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px}
+.route-result span{display:grid;place-items:center;min-height:74px;padding:12px;border:3px solid #fff;border-radius:20px;background:rgba(255,255,255,.9);color:#553f68;font-size:clamp(1.2rem,3.4vw,2rem);font-weight:1000;box-shadow:0 10px 24px rgba(80,55,105,.12)}
+@media(max-width:600px){.route-result{grid-template-columns:1fr}.route-result span{min-height:62px}}
