@@ -7,10 +7,14 @@ const settings={drawSeconds:el('drawSeconds'),excludeDrawn:el('excludeDrawn'),so
 
 const DEFAULT_MISSIONS=['答えを説明する','英文を音読する','日本語に訳す','理由を1つ言う','隣の人に質問する','例文を1つ作る'];
 const ROUTES=[
-  {horizontal:'窓 → 廊下',vertical:'前 → 後ろ'},
-  {horizontal:'窓 → 廊下',vertical:'後ろ → 前'},
-  {horizontal:'廊下 → 窓',vertical:'前 → 後ろ'},
-  {horizontal:'廊下 → 窓',vertical:'後ろ → 前'}
+  {order:'縦に順番',horizontal:'窓 → 廊下',vertical:'前 → 後ろ'},
+  {order:'縦に順番',horizontal:'窓 → 廊下',vertical:'後ろ → 前'},
+  {order:'縦に順番',horizontal:'廊下 → 窓',vertical:'前 → 後ろ'},
+  {order:'縦に順番',horizontal:'廊下 → 窓',vertical:'後ろ → 前'},
+  {order:'横に順番',horizontal:'窓 → 廊下',vertical:'前 → 後ろ'},
+  {order:'横に順番',horizontal:'窓 → 廊下',vertical:'後ろ → 前'},
+  {order:'横に順番',horizontal:'廊下 → 窓',vertical:'前 → 後ろ'},
+  {order:'横に順番',horizontal:'廊下 → 窓',vertical:'後ろ → 前'}
 ];
 const STORE_KEY='classroomDrawV2';
 const state={mode:'normal',busy:false,activeId:null,profiles:{}};
@@ -233,11 +237,11 @@ async function drawRoute(){
   const steps=12;
   for(let i=0;i<steps;i++){
     const r=ROUTES[i%ROUTES.length];
-    routeResult.innerHTML='<span>横：'+r.horizontal+'</span><span>縦：'+r.vertical+'</span>';
+    routeResult.innerHTML='<span>進み方：'+r.order+'</span><span>横：'+r.horizontal+'</span><span>縦：'+r.vertical+'</span>';
     tick(i);await sleep(total/steps);
   }
   const picked=pick(ROUTES);
-  routeResult.innerHTML='<span>横：'+picked.horizontal+'</span><span>縦：'+picked.vertical+'</span>';
+  routeResult.innerHTML='<span>進み方：'+picked.order+'</span><span>横：'+picked.horizontal+'</span><span>縦：'+picked.vertical+'</span>';
   const last=p.history[p.history.length-1];last.route=picked;
   persist();renderHistory();fanfare();confetti();
   stageLabel.textContent='この順番でGO!';
@@ -247,7 +251,7 @@ function renderHistory(){
   const p=current();drawCount.textContent=(p?.history.length||0)+'回';historyChips.innerHTML='';
   (p?.history||[]).forEach(x=>{
     const s=document.createElement('span');s.className='chip';
-    const route=x.route?' · '+x.route.horizontal+' / '+x.route.vertical:'';
+    const route=x.route?' · '+(x.route.order?x.route.order+' / ':'')+x.route.horizontal+' / '+x.route.vertical:'';
     s.textContent='#'+x.number+(x.mission?' · '+x.mission:'')+route;historyChips.appendChild(s);
   });
 }
