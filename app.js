@@ -2,10 +2,16 @@ const el=id=>document.getElementById(id);
 const classSelect=el('classSelect'),className=el('className'),studentCount=el('studentCount'),classSummary=el('classSummary');
 const numberDisplay=el('numberDisplay'),stageLabel=el('stageLabel'),drawBtn=el('drawBtn');
 const historyChips=el('historyChips'),drawCount=el('drawCount'),missionDisplay=el('missionDisplay');
-const rouletteWheel=el('rouletteWheel');
+const rouletteWheel=el('rouletteWheel'),routePanel=el('routePanel'),routeDrawBtn=el('routeDrawBtn'),routeResult=el('routeResult');
 const settings={drawSeconds:el('drawSeconds'),excludeDrawn:el('excludeDrawn'),soundOn:el('soundOn'),luckySafe:el('luckySafe'),missionList:el('missionList')};
 
 const DEFAULT_MISSIONS=['答えを説明する','英文を音読する','日本語に訳す','理由を1つ言う','隣の人に質問する','例文を1つ作る'];
+const ROUTES=[
+  {horizontal:'窓 → 廊下',vertical:'前 → 後ろ'},
+  {horizontal:'窓 → 廊下',vertical:'後ろ → 前'},
+  {horizontal:'廊下 → 窓',vertical:'前 → 後ろ'},
+  {horizontal:'廊下 → 窓',vertical:'後ろ → 前'}
+];
 const STORE_KEY='classroomDrawV2';
 const state={mode:'normal',busy:false,activeId:null,profiles:{}};
 
@@ -184,7 +190,8 @@ function confetti(){
 function resetStage(){
   rouletteWheel.classList.add('hidden');rouletteWheel.classList.remove('spin');
   numberDisplay.classList.remove('hidden');numberDisplay.textContent='--';numberDisplay.style.fontSize='';
-  missionDisplay.classList.add('hidden');stageLabel.textContent='READY';
+  missionDisplay.classList.add('hidden');routePanel.classList.add('hidden');routeResult.classList.add('hidden');routeResult.innerHTML='';
+  stageLabel.textContent='READY';
 }
 async function draw(){
   if(state.busy)return;
@@ -211,16 +218,36 @@ async function draw(){
     stageLabel.textContent='LUCKY SAFE!';
     missionDisplay.textContent='今回はセーフ！ もう一度DRAW!';missionDisplay.classList.remove('hidden');missionSound();
   }else{
-    current().history.push({number:winner,mission,time:Date.now(),mode:state.mode});
+    current().history.push({number:winner,mission,time:Date.now(),mode:state.mode,route:null});
+    routePanel.classList.remove('hidden');routeResult.classList.add('hidden');routeResult.innerHTML='';
     confetti();renderHistory();persist();
   }
   state.busy=false;drawBtn.disabled=false;
+}
+async function drawRoute(){
+  const p=current();if(state.busy||!p?.history.length)return;
+  state.busy=true;routeDrawBtn.disabled=true;routeResult.classList.remove('hidden');
+  stageLabel.textContent='ROUTE DRAW!';
+  const total=Math.max(900,Math.min(2400,drawDurationMs()*.55));
+  const steps=12;
+  for(let i=0;i<steps;i++){
+    const r=ROUTES[i%ROUTES.length];
+    routeResult.innerHTML='<span>横：'+r.horizontal+'</span><span>縦：'+r.vertical+'</span>';
+    tick(i);await sleep(total/steps);
+  }
+  const picked=pick(ROUTES);
+  routeResult.innerHTML='<span>横：'+picked.horizontal+'</span><span>縦：'+picked.vertical+'</span>';
+  const last=p.history[p.history.length-1];last.route=picked;
+  persist();renderHistory();fanfare();confetti();
+  stageLabel.textContent='この順番でGO!';
+  routeDrawBtn.disabled=false;state.busy=false;
 }
 function renderHistory(){
   const p=current();drawCount.textContent=(p?.history.length||0)+'回';historyChips.innerHTML='';
   (p?.history||[]).forEach(x=>{
     const s=document.createElement('span');s.className='chip';
-    s.textContent='#'+x.number+(x.mission?' · '+x.mission:'');historyChips.appendChild(s);
+    const route=x.route?' · '+x.route.horizontal+' / '+x.route.vertical:'';
+    s.textContent='#'+x.number+(x.mission?' · '+x.mission:'')+route;historyChips.appendChild(s);
   });
 }
 function openAbsence(){
@@ -240,6 +267,7 @@ document.querySelectorAll('.mode').forEach(b=>b.onclick=()=>{
   state.mode=b.dataset.mode;resetStage();
 });
 drawBtn.onclick=draw;
+routeDrawBtn.onclick=drawRoute;
 el('absenceBtn').onclick=openAbsence;
 el('saveAbsenceBtn').onclick=()=>{capture();persist()};
 el('saveClassBtn').onclick=saveCurrent;
