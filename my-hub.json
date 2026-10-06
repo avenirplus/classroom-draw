@@ -3,7 +3,7 @@
   "title": "CLASSROOM DRAW",
   "slug": "classroom-draw",
   "category": "Tools",
-  "summary": "授業で使える、出席番号ベースのカラフルなくじ引き・指名アプリ。SLOT・ROULETTE・SURVIVAL・MISSION、欠席除外、指名済み管理、複数クラス保存、履歴に対応。",
+  "summary": "授業で使える、出席番号ベースのカラフルなくじ引き・指名アプリ。SLOT・ROULETTE・SURVIVAL・MISSIONに加え、最初の指名後の回し方も4パターンから抽選できます。",
   "tags": [
     "授業",
     "抽選",
@@ -11,7 +11,8 @@
     "教員",
     "ルーレット",
     "サバイバル",
-    "MISSION"
+    "MISSION",
+    "回し方抽選"
   ],
   "color": "blue",
   "status": "setup",
@@ -24,5 +25,5 @@
   "intendedAccessUrl": "https://classroom-draw.avenirplus.workers.dev/",
   "manualUrl": "manual.html",
   "deploymentStage": "cloudflare-setup",
-  "updatedAt": "2026-09-30"
+  "updatedAt": "2026-10-06"
 }
