@@ -198,6 +198,7 @@ async function draw(){
   capture();
   const arr=pool();if(!arr.length){stageLabel.textContent='候補がいません';numberDisplay.textContent='--';return}
   state.busy=true;drawBtn.disabled=true;missionDisplay.classList.add('hidden');
+  routePanel.classList.add('hidden');routeResult.classList.add('hidden');routeResult.innerHTML='';
   let winner;
   if(state.mode==='roulette')winner=await animateRoulette(arr);
   else if(state.mode==='survival')winner=await animateSurvival(arr);
@@ -275,7 +276,7 @@ el('newClassBtn').onclick=newClass;
 el('deleteClassBtn').onclick=deleteCurrentClass;
 classSelect.onchange=e=>switchClass(e.target.value);
 el('settingsToggle').onclick=()=>{const p=el('settingsPanel');p.classList.toggle('hidden');el('settingsToggle').textContent=p.classList.contains('hidden')?'設定を開く':'設定を閉じる'};
-el('undoBtn').onclick=()=>{const p=current();if(p.history.length){p.history.pop();renderHistory();persist();flashLabel('1回戻しました')}};
+el('undoBtn').onclick=()=>{const p=current();if(p.history.length){p.history.pop();renderHistory();persist();routePanel.classList.add('hidden');routeResult.classList.add('hidden');flashLabel('1回戻しました')}};
 el('resetRoundBtn').onclick=()=>{if(confirm('このクラスの今日の指名履歴をリセットしますか？')){current().history=[];renderHistory();persist();resetStage()}};
 el('helpBtn').onclick=()=>location.href='manual.html';
 [className,studentCount,settings.drawSeconds,settings.excludeDrawn,settings.soundOn,settings.luckySafe,settings.missionList].forEach(x=>x.addEventListener('change',()=>{capture();persist()}));
