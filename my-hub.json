@@ -20,10 +20,10 @@
   "githubRepo": "classroom-draw",
   "repoUrl": "https://github.com/avenirplus/classroom-draw",
   "publicUrl": null,
-  "cloudflareUrl": null,
-  "accessUrl": null,
+  "cloudflareUrl": "https://classroom-draw.avenirplus.workers.dev/",
+  "accessUrl": "https://classroom-draw.avenirplus.workers.dev/",
   "intendedAccessUrl": "https://classroom-draw.avenirplus.workers.dev/",
   "manualUrl": "manual.html",
   "deploymentStage": "cloudflare-setup",
-  "updatedAt": "2026-10-06"
+  "updatedAt": "2026-10-08"
 }
