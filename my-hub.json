@@ -15,7 +15,7 @@
     "回し方抽選"
   ],
   "color": "blue",
-  "status": "setup",
+  "status": "active",
   "visibility": "limited",
   "githubRepo": "classroom-draw",
   "repoUrl": "https://github.com/avenirplus/classroom-draw",
@@ -24,6 +24,6 @@
   "accessUrl": "https://classroom-draw.avenirplus.workers.dev/",
   "intendedAccessUrl": "https://classroom-draw.avenirplus.workers.dev/",
   "manualUrl": "manual.html",
-  "deploymentStage": "cloudflare-setup",
+  "deploymentStage": "cloudflare-live",
   "updatedAt": "2026-10-08"
 }
