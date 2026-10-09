@@ -229,6 +229,17 @@ async function draw(){
   }
   state.busy=false;drawBtn.disabled=false;
 }
+function orderLabelText(order){
+  if(order==='横に順番')return '横に進む';
+  if(order==='縦に順番')return '縦に進む';
+  return order;
+}
+function renderRouteResultHtml(route){
+  return '<div class="route-card"><div class="route-card-label">進み方</div><div class="route-card-value">'+orderLabelText(route.order)+'</div></div>'
+    +'<div class="route-card"><div class="route-card-label">横方向</div><div class="route-card-value">'+route.horizontal+'</div></div>'
+    +'<div class="route-card"><div class="route-card-label">縦方向</div><div class="route-card-value">'+route.vertical+'</div></div>';
+}
+
 async function drawRoute(){
   const p=current();if(state.busy||!p?.history.length)return;
   state.busy=true;routeDrawBtn.disabled=true;routeResult.classList.remove('hidden');
@@ -237,11 +248,11 @@ async function drawRoute(){
   const steps=12;
   for(let i=0;i<steps;i++){
     const r=ROUTES[i%ROUTES.length];
-    routeResult.innerHTML='<span>進み方：'+r.order+'</span><span>横：'+r.horizontal+'</span><span>縦：'+r.vertical+'</span>';
+    routeResult.innerHTML=renderRouteResultHtml(r);
     tick(i);await sleep(total/steps);
   }
   const picked=pick(ROUTES);
-  routeResult.innerHTML='<span>進み方：'+picked.order+'</span><span>横：'+picked.horizontal+'</span><span>縦：'+picked.vertical+'</span>';
+  routeResult.innerHTML=renderRouteResultHtml(picked);
   const last=p.history[p.history.length-1];last.route=picked;
   persist();renderHistory();fanfare();confetti();
   stageLabel.textContent='この順番でGO!';
@@ -251,7 +262,7 @@ function renderHistory(){
   const p=current();drawCount.textContent=(p?.history.length||0)+'回';historyChips.innerHTML='';
   (p?.history||[]).forEach(x=>{
     const s=document.createElement('span');s.className='chip';
-    const route=x.route?' · '+(x.route.order?x.route.order+' / ':'')+x.route.horizontal+' / '+x.route.vertical:'';
+    const route=x.route?' · '+(x.route.order?orderLabelText(x.route.order)+' / ':'')+x.route.horizontal+' / '+x.route.vertical:'';
     s.textContent='#'+x.number+(x.mission?' · '+x.mission:'')+route;historyChips.appendChild(s);
   });
 }
