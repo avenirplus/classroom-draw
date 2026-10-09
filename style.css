@@ -26,6 +26,8 @@ button,input,select,textarea{font:inherit}.app-shell{max-width:1140px;margin:0 a
 .route-draw-btn{min-height:50px;padding:12px 22px;border:3px solid #fff;border-radius:18px;background:linear-gradient(135deg,#ffd95f,#ff9fc5,#ac8cff);color:#4a375d;font-weight:1000;font-size:1.05rem;cursor:pointer;box-shadow:0 8px 0 #8b6e9c,0 14px 24px rgba(80,55,105,.16)}
 .route-draw-btn:active{transform:translateY(5px);box-shadow:0 3px 0 #8b6e9c}
 .route-draw-btn:disabled{opacity:.55;cursor:not-allowed}
-.route-result{width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:12px}
-.route-result span{display:grid;place-items:center;min-height:74px;padding:12px;border:3px solid #fff;border-radius:20px;background:rgba(255,255,255,.9);color:#553f68;font-size:clamp(1.2rem,3.4vw,2rem);font-weight:1000;box-shadow:0 10px 24px rgba(80,55,105,.12)}
-@media(max-width:700px){.route-result{grid-template-columns:1fr}.route-result span{min-height:62px}}
+.route-result{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:10px 0 4px}
+.route-card{min-height:118px;padding:16px 14px;border:3px solid #fff;border-radius:22px;background:rgba(255,255,255,.94);box-shadow:0 10px 24px rgba(80,55,105,.12);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;overflow:hidden}
+.route-card-label{font-size:.84rem;font-weight:900;letter-spacing:.08em;color:#8b739d;margin-bottom:9px;line-height:1.2}
+.route-card-value{font-size:clamp(1.35rem,2.8vw,2rem);font-weight:1000;line-height:1.25;color:#47355a;white-space:nowrap;word-break:keep-all}
+@media(max-width:700px){.route-result{grid-template-columns:1fr}.route-card{min-height:92px}.route-card-value{font-size:clamp(1.25rem,5vw,1.75rem)}}
