@@ -6,6 +6,71 @@ const rouletteWheel=el('rouletteWheel'),routePanel=el('routePanel'),routeDrawBtn
 const settings={drawSeconds:el('drawSeconds'),excludeDrawn:el('excludeDrawn'),soundOn:el('soundOn'),luckySafe:el('luckySafe'),missionList:el('missionList')};
 
 const DEFAULT_MISSIONS=['答えを説明する','英文を音読する','日本語に訳す','理由を1つ言う','隣の人に質問する','例文を1つ作る'];
+const DEFAULT_MISSIONS_EN=['Explain your answer','Read the English sentence aloud','Translate into Japanese','Give one reason','Ask the person next to you a question','Make one example sentence'];
+let currentLang=localStorage.getItem('classroomDrawLang')==='en'?'en':'ja';
+const I18N={
+  ja:{
+    help:'？ 使い方',helpAria:'使い方を開く',logout:'ログアウト',classLabel:'クラス',setAbsence:'欠席を設定',
+    routeDraw:'回し方を抽選',undo:'1回戻す',resetHistory:'今日の履歴をリセット',teacher:'先生用',
+    openSettings:'設定を開く',closeSettings:'設定を閉じる',className:'クラス名',classPlaceholder:'例：1年A組',
+    maxStudentNumber:'最大出席番号',saveClass:'このクラスを保存',newClass:'＋ 新しいクラス',deleteClass:'このクラスを削除',
+    drawSeconds:'抽選時間（秒）',excludeDrawn:'一度当たった人を次回以降除外',sound:'効果音',luckySafe:'LUCKY SAFEを使う',
+    missionOptions:'MISSION候補（1行1件）',todaysPicks:'今日の指名',absentNumbers:'欠席番号',absentHint:'欠席者をタップしてください。',
+    close:'閉じる',save:'保存',setupClass:'クラスを設定',classSaved:'クラスを保存しました',classDeleted:'クラスを削除しました',
+    noCandidates:'候補がいません',luckyMessage:'今回はセーフ！ もう一度DRAW!',routeGo:'この順番でGO!',
+    routeOrder:'進み方',horizontal:'横方向',vertical:'縦方向',orderHorizontal:'横に進む',orderVertical:'縦に進む',
+    windowToHallway:'窓 → 廊下',hallwayToWindow:'廊下 → 窓',frontToBack:'前 → 後ろ',backToFront:'後ろ → 前',
+    undoDone:'1回戻しました',resetConfirm:'このクラスの今日の指名履歴をリセットしますか？',
+    deleteUnset:'この未設定クラス',deleteQuestion:'を削除しますか？\n欠席設定・指名履歴・MISSION設定も削除されます。',
+    ready:'READY',defaultMission:'答えを説明する'
+  },
+  en:{
+    help:'? How to Use',helpAria:'Open instructions',logout:'Log out',classLabel:'Class',setAbsence:'Set absences',
+    routeDraw:'Draw next order',undo:'Undo last',resetHistory:"Reset today's history",teacher:'Teacher controls',
+    openSettings:'Show settings',closeSettings:'Hide settings',className:'Class name',classPlaceholder:'e.g. Class 1A',
+    maxStudentNumber:'Highest student number',saveClass:'Save this class',newClass:'+ New class',deleteClass:'Delete this class',
+    drawSeconds:'Draw time (seconds)',excludeDrawn:'Exclude students already picked',sound:'Sound effects',luckySafe:'Use LUCKY SAFE',
+    missionOptions:'MISSION options (one per line)',todaysPicks:"Today's picks",absentNumbers:'Absent numbers',absentHint:'Tap the numbers of absent students.',
+    close:'Close',save:'Save',setupClass:'Set up a class',classSaved:'Class saved',classDeleted:'Class deleted',
+    noCandidates:'No eligible students',luckyMessage:'Safe this time! DRAW again!',routeGo:'Use this order!',
+    routeOrder:'Direction',horizontal:'Across the room',vertical:'Front / back',orderHorizontal:'Across rows',orderVertical:'Down columns',
+    windowToHallway:'Window → Hallway',hallwayToWindow:'Hallway → Window',frontToBack:'Front → Back',backToFront:'Back → Front',
+    undoDone:'Last pick undone',resetConfirm:"Reset today's pick history for this class?",
+    deleteUnset:'this unconfigured class',deleteQuestion:'?\nAbsence settings, pick history, and MISSION settings will also be deleted.',
+    ready:'READY',defaultMission:'Explain your answer'
+  }
+};
+function t(key){return I18N[currentLang][key]??I18N.ja[key]??key}
+function defaultMissionText(){return (currentLang==='en'?DEFAULT_MISSIONS_EN:DEFAULT_MISSIONS).join('\n')}
+function directionText(value){
+  const map={
+    '窓 → 廊下':'windowToHallway','廊下 → 窓':'hallwayToWindow','前 → 後ろ':'frontToBack','後ろ → 前':'backToFront'
+  };
+  return map[value]?t(map[value]):value;
+}
+function updateSettingsToggle(){
+  const panel=el('settingsPanel'),btn=el('settingsToggle');
+  if(panel&&btn)btn.textContent=panel.classList.contains('hidden')?t('openSettings'):t('closeSettings');
+}
+function applyI18n(){
+  document.documentElement.lang=currentLang;
+  document.querySelectorAll('[data-i18n]').forEach(node=>{node.textContent=t(node.dataset.i18n)});
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(node=>{node.placeholder=t(node.dataset.i18nPlaceholder)});
+  document.querySelectorAll('[data-i18n-aria]').forEach(node=>{node.setAttribute('aria-label',t(node.dataset.i18nAria))});
+  el('langJaBtn')?.classList.toggle('active',currentLang==='ja');
+  el('langEnBtn')?.classList.toggle('active',currentLang==='en');
+  updateSettingsToggle();
+}
+function setLang(lang){
+  if(lang!== 'ja'&&lang!=='en')return;
+  capture();
+  const p=current();
+  const before=(currentLang==='en'?DEFAULT_MISSIONS_EN:DEFAULT_MISSIONS).join('\n');
+  const after=(lang==='en'?DEFAULT_MISSIONS_EN:DEFAULT_MISSIONS).join('\n');
+  if(p&&p.missionList===before)p.missionList=after;
+  currentLang=lang;localStorage.setItem('classroomDrawLang',lang);
+  persist();applyI18n();loadProfile();
+}
 const ROUTES=[
   {order:'縦に順番',horizontal:'窓 → 廊下',vertical:'前 → 後ろ'},
   {order:'縦に順番',horizontal:'窓 → 廊下',vertical:'後ろ → 前'},
@@ -20,7 +85,7 @@ const STORE_KEY='classroomDrawV2';
 const state={mode:'normal',busy:false,activeId:null,profiles:{}};
 
 function uid(){return 'class-'+Date.now()+'-'+Math.random().toString(36).slice(2,6)}
-function freshProfile(name='クラスを設定'){return{id:uid(),name,count:40,drawSeconds:3,absent:[],history:[],excludeDrawn:true,soundOn:true,luckySafe:false,missionList:DEFAULT_MISSIONS.join('\n')}}
+function freshProfile(name='クラスを設定'){return{id:uid(),name,count:40,drawSeconds:3,absent:[],history:[],excludeDrawn:true,soundOn:true,luckySafe:false,missionList:defaultMissionText()}}
 function current(){return state.profiles[state.activeId]}
 
 function migrate(){
@@ -49,7 +114,7 @@ function capture(){
 function renderClassSelect(){
   classSelect.innerHTML='';
   Object.values(state.profiles).forEach(p=>{
-    const o=document.createElement('option');o.value=p.id;o.textContent=p.name;
+    const o=document.createElement('option');o.value=p.id;o.textContent=p.name==='クラスを設定'?t('setupClass'):p.name;
     if(p.id===state.activeId)o.selected=true;classSelect.appendChild(o);
   });
 }
@@ -58,19 +123,19 @@ function loadProfile(){
   className.value=p.name==='クラスを設定'?'':p.name;studentCount.value=p.count;
   settings.drawSeconds.value=p.drawSeconds||3;
   settings.excludeDrawn.checked=p.excludeDrawn!==false;settings.soundOn.checked=p.soundOn!==false;
-  settings.luckySafe.checked=!!p.luckySafe;settings.missionList.value=p.missionList||DEFAULT_MISSIONS.join('\n');
+  settings.luckySafe.checked=!!p.luckySafe;settings.missionList.value=p.missionList||defaultMissionText();
   renderClassSelect();renderClassSummary();renderHistory();resetStage();
   if(p.name==='クラスを設定'){
     const panel=el('settingsPanel');panel.classList.remove('hidden');
-    el('settingsToggle').textContent='設定を閉じる';
+    el('settingsToggle').textContent=t('closeSettings');
   }
 }
 function renderClassSummary(){
   const p=current();if(!p)return;
-  classSummary.textContent='最大'+p.count+'番 · '+(p.drawSeconds||3)+'秒';
+  classSummary.textContent=currentLang==='en'?'Max #'+p.count+' · '+(p.drawSeconds||3)+'s':'最大'+p.count+'番 · '+(p.drawSeconds||3)+'秒';
 }
 function saveCurrent(){
-  capture();persist();renderClassSelect();renderClassSummary();flashLabel('クラスを保存しました');
+  capture();persist();renderClassSelect();renderClassSummary();flashLabel(t('classSaved'));
 }
 function newClass(){
   capture();persist();
@@ -80,8 +145,8 @@ function newClass(){
 function switchClass(id){capture();persist();state.activeId=id;persist();loadProfile()}
 function deleteCurrentClass(){
   const p=current();if(!p)return;
-  const label=p.name==='クラスを設定'?'この未設定クラス':`「${p.name}」`;
-  if(!confirm(`${label}を削除しますか？\n欠席設定・指名履歴・MISSION設定も削除されます。`))return;
+  const label=p.name==='クラスを設定'?t('deleteUnset'):(currentLang==='en'?p.name:'「'+p.name+'」');
+  if(!confirm(label+t('deleteQuestion')))return;
   delete state.profiles[state.activeId];
   const ids=Object.keys(state.profiles);
   if(!ids.length){
@@ -90,7 +155,7 @@ function deleteCurrentClass(){
   }else{
     state.activeId=ids[0];
   }
-  persist();loadProfile();flashLabel('クラスを削除しました');
+  persist();loadProfile();flashLabel(t('classDeleted'));
 }
 
 function absentSet(){return new Set(current()?.absent||[])}
@@ -110,7 +175,7 @@ function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
 function pulseNumber(){
   numberDisplay.classList.remove('pop');void numberDisplay.offsetWidth;numberDisplay.classList.add('pop');
 }
-function flashLabel(t){stageLabel.textContent=t;setTimeout(()=>{if(!state.busy)stageLabel.textContent='READY'},1100)}
+function flashLabel(text){stageLabel.textContent=text;setTimeout(()=>{if(!state.busy)stageLabel.textContent=t('ready')},1100)}
 
 let audioCtx=null;
 function audio(){
@@ -195,12 +260,12 @@ function resetStage(){
   rouletteWheel.classList.add('hidden');rouletteWheel.classList.remove('spin');
   numberDisplay.classList.remove('hidden');numberDisplay.textContent='--';numberDisplay.style.fontSize='';
   missionDisplay.classList.add('hidden');routePanel.classList.add('hidden');routeResult.classList.add('hidden');routeResult.innerHTML='';
-  stageLabel.textContent='READY';
+  stageLabel.textContent=t('ready');
 }
 async function draw(){
   if(state.busy)return;
   capture();
-  const arr=pool();if(!arr.length){stageLabel.textContent='候補がいません';numberDisplay.textContent='--';return}
+  const arr=pool();if(!arr.length){stageLabel.textContent=t('noCandidates');numberDisplay.textContent='--';return}
   state.busy=true;drawBtn.disabled=true;missionDisplay.classList.add('hidden');
   routePanel.classList.add('hidden');routeResult.classList.add('hidden');routeResult.innerHTML='';
   let winner;
@@ -215,13 +280,13 @@ async function draw(){
   let mission='';
   if(state.mode==='mission'){
     const list=settings.missionList.value.split('\n').map(s=>s.trim()).filter(Boolean);
-    mission=list.length?pick(list):'答えを説明する';
+    mission=list.length?pick(list):t('defaultMission');
     missionDisplay.textContent='MISSION：'+mission;missionDisplay.classList.remove('hidden');missionSound();
   }else if(state.mode!=='roulette'){fanfare()}
 
   if(settings.luckySafe.checked&&Math.random()<.08){
     stageLabel.textContent='LUCKY SAFE!';
-    missionDisplay.textContent='今回はセーフ！ もう一度DRAW!';missionDisplay.classList.remove('hidden');missionSound();
+    missionDisplay.textContent=t('luckyMessage');missionDisplay.classList.remove('hidden');missionSound();
   }else{
     current().history.push({number:winner,mission,time:Date.now(),mode:state.mode,route:null});
     routePanel.classList.remove('hidden');routeResult.classList.add('hidden');routeResult.innerHTML='';
@@ -230,14 +295,14 @@ async function draw(){
   state.busy=false;drawBtn.disabled=false;
 }
 function orderLabelText(order){
-  if(order==='横に順番')return '横に進む';
-  if(order==='縦に順番')return '縦に進む';
+  if(order==='横に順番')return t('orderHorizontal');
+  if(order==='縦に順番')return t('orderVertical');
   return order;
 }
 function renderRouteResultHtml(route){
-  return '<div class="route-card"><div class="route-card-label">進み方</div><div class="route-card-value">'+orderLabelText(route.order)+'</div></div>'
-    +'<div class="route-card"><div class="route-card-label">横方向</div><div class="route-card-value">'+route.horizontal+'</div></div>'
-    +'<div class="route-card"><div class="route-card-label">縦方向</div><div class="route-card-value">'+route.vertical+'</div></div>';
+  return '<div class="route-card"><div class="route-card-label">'+t('routeOrder')+'</div><div class="route-card-value">'+orderLabelText(route.order)+'</div></div>'
+    +'<div class="route-card"><div class="route-card-label">'+t('horizontal')+'</div><div class="route-card-value">'+directionText(route.horizontal)+'</div></div>'
+    +'<div class="route-card"><div class="route-card-label">'+t('vertical')+'</div><div class="route-card-value">'+directionText(route.vertical)+'</div></div>';
 }
 
 async function drawRoute(){
@@ -255,14 +320,14 @@ async function drawRoute(){
   routeResult.innerHTML=renderRouteResultHtml(picked);
   const last=p.history[p.history.length-1];last.route=picked;
   persist();renderHistory();fanfare();confetti();
-  stageLabel.textContent='この順番でGO!';
+  stageLabel.textContent=t('routeGo');
   routeDrawBtn.disabled=false;state.busy=false;
 }
 function renderHistory(){
-  const p=current();drawCount.textContent=(p?.history.length||0)+'回';historyChips.innerHTML='';
+  const p=current(),n=p?.history.length||0;drawCount.textContent=currentLang==='en'?(n+' '+(n===1?'pick':'picks')):(n+'回');historyChips.innerHTML='';
   (p?.history||[]).forEach(x=>{
     const s=document.createElement('span');s.className='chip';
-    const route=x.route?' · '+(x.route.order?orderLabelText(x.route.order)+' / ':'')+x.route.horizontal+' / '+x.route.vertical:'';
+    const route=x.route?' · '+(x.route.order?orderLabelText(x.route.order)+' / ':'')+directionText(x.route.horizontal)+' / '+directionText(x.route.vertical):'';
     s.textContent='#'+x.number+(x.mission?' · '+x.mission:'')+route;historyChips.appendChild(s);
   });
 }
@@ -290,10 +355,12 @@ el('saveClassBtn').onclick=saveCurrent;
 el('newClassBtn').onclick=newClass;
 el('deleteClassBtn').onclick=deleteCurrentClass;
 classSelect.onchange=e=>switchClass(e.target.value);
-el('settingsToggle').onclick=()=>{const p=el('settingsPanel');p.classList.toggle('hidden');el('settingsToggle').textContent=p.classList.contains('hidden')?'設定を開く':'設定を閉じる'};
-el('undoBtn').onclick=()=>{const p=current();if(p.history.length){p.history.pop();renderHistory();persist();routePanel.classList.add('hidden');routeResult.classList.add('hidden');flashLabel('1回戻しました')}};
-el('resetRoundBtn').onclick=()=>{if(confirm('このクラスの今日の指名履歴をリセットしますか？')){current().history=[];renderHistory();persist();resetStage()}};
-el('helpBtn').onclick=()=>location.href='manual.html';
+el('settingsToggle').onclick=()=>{const p=el('settingsPanel');p.classList.toggle('hidden');updateSettingsToggle()};
+el('undoBtn').onclick=()=>{const p=current();if(p.history.length){p.history.pop();renderHistory();persist();routePanel.classList.add('hidden');routeResult.classList.add('hidden');flashLabel(t('undoDone'))}};
+el('resetRoundBtn').onclick=()=>{if(confirm(t('resetConfirm'))){current().history=[];renderHistory();persist();resetStage()}};
+el('helpBtn').onclick=()=>location.href='manual.html?lang='+currentLang;
+el('langJaBtn').onclick=()=>setLang('ja');
+el('langEnBtn').onclick=()=>setLang('en');
 [className,studentCount,settings.drawSeconds,settings.excludeDrawn,settings.soundOn,settings.luckySafe,settings.missionList].forEach(x=>x.addEventListener('change',()=>{capture();persist()}));
 document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&!['INPUT','TEXTAREA','SELECT','BUTTON'].includes(document.activeElement?.tagName)){e.preventDefault();draw()}});
-migrate();loadProfile();
+migrate();applyI18n();loadProfile();
