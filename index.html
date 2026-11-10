@@ -14,18 +14,22 @@
         <h1>WHO'S NEXT?</h1>
       </div>
       <div class="topbar-actions">
-        <button id="helpBtn" class="ghost-btn" aria-label="使い方を開く">？ 使い方</button>
-        <a class="ghost-btn" href="/__auth/logout" style="text-decoration:none">ログアウト</a>
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button id="langJaBtn" class="lang-btn active" type="button">JP</button>
+          <button id="langEnBtn" class="lang-btn" type="button">EN</button>
+        </div>
+        <button id="helpBtn" class="ghost-btn" data-i18n="help" data-i18n-aria="helpAria" aria-label="使い方を開く">？ 使い方</button>
+        <a class="ghost-btn" href="/__auth/logout" style="text-decoration:none" data-i18n="logout">ログアウト</a>
       </div>
     </header>
 
     <section class="status-row">
       <label>
-        クラス
+        <span data-i18n="classLabel">クラス</span>
         <select id="classSelect" aria-label="保存クラス"></select>
       </label>
       <strong id="classSummary" class="class-summary">最大40番</strong>
-      <button id="absenceBtn" class="soft-btn">欠席を設定</button>
+      <button id="absenceBtn" class="soft-btn" data-i18n="setAbsence">欠席を設定</button>
     </section>
 
     <section class="stage" aria-live="polite">
@@ -44,56 +48,56 @@
       <button id="drawBtn" class="draw-btn">DRAW!</button>
 
       <div id="routePanel" class="route-panel hidden">
-        <button id="routeDrawBtn" class="route-draw-btn" type="button">回し方を抽選</button>
+        <button id="routeDrawBtn" class="route-draw-btn" type="button" data-i18n="routeDraw">回し方を抽選</button>
         <div id="routeResult" class="route-result hidden" aria-live="polite"></div>
       </div>
 
       <div class="mini-actions">
-        <button id="undoBtn" class="ghost-btn">1回戻す</button>
-        <button id="resetRoundBtn" class="ghost-btn">今日の履歴をリセット</button>
+        <button id="undoBtn" class="ghost-btn" data-i18n="undo">1回戻す</button>
+        <button id="resetRoundBtn" class="ghost-btn" data-i18n="resetHistory">今日の履歴をリセット</button>
       </div>
     </section>
 
     <section class="teacher-panel">
       <div class="panel-head">
-        <h2>先生用</h2>
-        <button id="settingsToggle" class="ghost-btn">設定を開く</button>
+        <h2 data-i18n="teacher">先生用</h2>
+        <button id="settingsToggle" class="ghost-btn" data-i18n="openSettings">設定を開く</button>
       </div>
 
       <div id="settingsPanel" class="settings hidden">
         <div class="class-settings">
           <label>
-            クラス名
-            <input id="className" type="text" value="" maxlength="24" placeholder="例：1年A組" />
+            <span data-i18n="className">クラス名</span>
+            <input id="className" type="text" value="" maxlength="24" placeholder="例：1年A組" data-i18n-placeholder="classPlaceholder" />
           </label>
           <label>
-            最大出席番号
+            <span data-i18n="maxStudentNumber">最大出席番号</span>
             <input id="studentCount" type="number" min="1" max="60" value="40" />
           </label>
           <div class="class-setting-actions">
-            <button id="saveClassBtn" class="soft-btn" type="button">このクラスを保存</button>
-            <button id="newClassBtn" class="ghost-btn" type="button">＋ 新しいクラス</button>
-            <button id="deleteClassBtn" class="danger-btn" type="button">このクラスを削除</button>
+            <button id="saveClassBtn" class="soft-btn" type="button" data-i18n="saveClass">このクラスを保存</button>
+            <button id="newClassBtn" class="ghost-btn" type="button" data-i18n="newClass">＋ 新しいクラス</button>
+            <button id="deleteClassBtn" class="danger-btn" type="button" data-i18n="deleteClass">このクラスを削除</button>
           </div>
         </div>
         <label>
-          抽選時間（秒）
+          <span data-i18n="drawSeconds">抽選時間（秒）</span>
           <input id="drawSeconds" type="number" min="1" max="15" step="1" value="3" />
         </label>
         <label class="toggle-row">
-          <span>一度当たった人を次回以降除外</span>
+          <span data-i18n="excludeDrawn">一度当たった人を次回以降除外</span>
           <input id="excludeDrawn" type="checkbox" checked />
         </label>
         <label class="toggle-row">
-          <span>効果音</span>
+          <span data-i18n="sound">効果音</span>
           <input id="soundOn" type="checkbox" checked />
         </label>
         <label class="toggle-row">
-          <span>LUCKY SAFEを使う</span>
+          <span data-i18n="luckySafe">LUCKY SAFEを使う</span>
           <input id="luckySafe" type="checkbox" />
         </label>
         <label>
-          MISSION候補（1行1件）
+          <span data-i18n="missionOptions">MISSION候補（1行1件）</span>
           <textarea id="missionList" rows="7">答えを説明する
 英文を音読する
 日本語に訳す
@@ -105,7 +109,7 @@
 
       <div class="history-wrap">
         <div>
-          <span class="history-label">今日の指名</span>
+          <span class="history-label" data-i18n="todaysPicks">今日の指名</span>
           <strong id="drawCount">0回</strong>
         </div>
         <div id="historyChips" class="chips"></div>
@@ -115,12 +119,12 @@
 
   <dialog id="absenceDialog">
     <form method="dialog" class="dialog-card">
-      <h2>欠席番号</h2>
-      <p>欠席者をタップしてください。</p>
+      <h2 data-i18n="absentNumbers">欠席番号</h2>
+      <p data-i18n="absentHint">欠席者をタップしてください。</p>
       <div id="absenceGrid" class="absence-grid"></div>
       <div class="dialog-actions">
-        <button value="cancel" class="ghost-btn">閉じる</button>
-        <button id="saveAbsenceBtn" value="default" class="soft-btn">保存</button>
+        <button value="cancel" class="ghost-btn" data-i18n="close">閉じる</button>
+        <button id="saveAbsenceBtn" value="default" class="soft-btn" data-i18n="save">保存</button>
       </div>
     </form>
   </dialog>
