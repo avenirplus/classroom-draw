@@ -3,84 +3,59 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>CLASSROOM DRAW 使い方</title>
+  <title>CLASSROOM DRAW</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <main class="app-shell">
   <header class="topbar">
-    <div><p class="eyebrow">CLASSROOM DRAW</p><h1>使い方</h1></div>
-    <a class="ghost-btn" href="index.html" style="text-decoration:none">アプリへ戻る</a>
+    <div><p class="eyebrow">CLASSROOM DRAW</p><h1 id="manualTitle">使い方</h1></div>
+    <div class="topbar-actions">
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button id="manualJa" class="lang-btn" type="button">JP</button>
+        <button id="manualEn" class="lang-btn" type="button">EN</button>
+      </div>
+      <a id="backLink" class="ghost-btn" href="index.html" style="text-decoration:none">アプリへ戻る</a>
+    </div>
   </header>
 
-  <section class="teacher-panel">
-    <h2>このアプリは何をする？</h2>
-    <p>授業中に出席番号を抽選して、発表・音読・回答などの指名を楽しく行うアプリです。名前は登録せず、出席番号だけで使えます。</p>
-  </section>
+  <div id="manualJaBody">
+    <section class="teacher-panel"><h2>このアプリは何をする？</h2><p>授業中に出席番号を抽選して、発表・音読・回答などの指名を楽しく行うアプリです。名前は登録せず、出席番号だけで使えます。</p></section>
+    <section class="teacher-panel"><h2>まずこれだけ</h2><ol><li>「設定を開く」からクラス名と最大出席番号を入力し、「このクラスを保存」を押します。</li><li>欠席者がいれば「欠席を設定」で番号をタップします。</li><li>SLOT / ROULETTE / SURVIVAL / MISSION を選び、「DRAW!」を押します。</li></ol></section>
+    <section class="teacher-panel"><h2>4つの抽選モード</h2><p><strong>SLOT：</strong>番号が高速で切り替わり、少しずつ減速して1人決まります。</p><p><strong>ROULETTE：</strong>カラフルなルーレットが回転し、停止して番号を発表します。</p><p><strong>SURVIVAL：</strong>候補が段階的に減り、FINAL 3から最後の1人を選びます。</p><p><strong>MISSION：</strong>番号決定後に「英文を音読」「理由を言う」などのミッションも抽選します。</p></section>
+    <section class="teacher-panel"><h2>クラス保存</h2><p>複数クラスを保存できます。「＋ 新しいクラス」で別クラスを作り、クラス名・最大出席番号・欠席番号・指名履歴・設定をクラスごとに保持します。</p><p>上部のクラス選択から、保存したクラスをすぐ切り替えられます。</p></section>
+    <section class="teacher-panel"><h2>指名したあとの「回し方」も抽選</h2><p>最初の1人が決まると「回し方を抽選」ボタンが表示されます。進み方・横方向・縦方向を組み合わせた8パターンから1つをランダムに選びます。</p></section>
+    <section class="teacher-panel"><h2>公平に当てる</h2><p>「一度当たった人を次回以降除外」をONにすると、まだ指名されていない番号を優先します。全員が一巡したあとは再び全員が候補になります。欠席番号は常に除外されます。</p></section>
+    <section class="teacher-panel"><h2>データ</h2><p>クラス名、最大出席番号、欠席番号、指名履歴、MISSION候補などは、このブラウザのlocalStorageに保存されます。別端末には自動同期されません。生徒名などの個人情報は登録しない設計です。</p></section>
+  </div>
 
-  <section class="teacher-panel">
-    <h2>まずこれだけ</h2>
-    <ol>
-      <li>「設定を開く」からクラス名と最大出席番号を入力し、「このクラスを保存」を押します。</li>
-      <li>欠席者がいれば「欠席を設定」で番号をタップします。</li>
-      <li>SLOT / ROULETTE / SURVIVAL / MISSION を選び、「DRAW!」を押します。</li>
-    </ol>
-  </section>
-
-  <section class="teacher-panel">
-    <h2>4つの抽選モード</h2>
-    <p><strong>SLOT：</strong>番号が高速で切り替わり、少しずつ減速して1人決まります。</p>
-    <p><strong>ROULETTE：</strong>カラフルなルーレットが回転し、停止して番号を発表します。</p>
-    <p><strong>SURVIVAL：</strong>候補が段階的に減り、FINAL 3から最後の1人を選びます。</p>
-    <p><strong>MISSION：</strong>番号決定後に「英文を音読」「理由を言う」などのミッションも抽選します。</p>
-  </section>
-
-  <section class="teacher-panel">
-    <h2>クラス保存</h2>
-    <p>複数クラスを保存できます。「＋ 新しいクラス」で別クラスを作り、クラス名・最大出席番号・欠席番号・指名履歴・設定をクラスごとに保持します。</p>
-    <p>上部のクラス選択から、保存したクラスをすぐ切り替えられます。</p>
-    <p>登録を間違えた場合は、設定内の「このクラスを削除」から削除できます。削除前に確認画面が出ます。最後の1クラスを削除した場合は、空の新規クラスが自動で作られます。</p>
-  </section>
-
-  <section class="teacher-panel">
-    <h2>指名したあとの「回し方」も抽選</h2>
-    <p>最初の1人が決まると「回し方を抽選」ボタンが表示されます。次の3要素を組み合わせた8パターンから1つをランダムに選びます。</p>
-    <ul>
-      <li>進み方：縦に順番 / 横に順番</li>
-      <li>横方向：窓 → 廊下 / 廊下 → 窓</li>
-      <li>縦方向：前 → 後ろ / 後ろ → 前</li>
-    </ul>
-    <p>結果は「進み方」「横」「縦」の3項目で大きく表示され、指名履歴にも残ります。</p>
-  </section>
-
-  <section class="teacher-panel">
-    <h2>公平に当てる</h2>
-    <p><strong>抽選時間：</strong>設定画面で1〜15秒に変更できます。DRAWを押してから番号が決まるまでの演出時間として、SLOT / ROULETTE / SURVIVAL / MISSIONすべてに適用され、クラスごとに保存されます。</p>
-    <p>「一度当たった人を次回以降除外」をONにすると、そのクラスでまだ指名されていない番号を優先します。全員が一巡したあとは再び全員が候補になります。</p>
-    <p>欠席番号は抽選候補から常に除外されます。</p>
-  </section>
-
-  <section class="teacher-panel">
-    <h2>演出</h2>
-    <p>抽選中のクリック音、決定ファンファーレ、MISSION音、サバイバル効果音、紙吹雪があります。音が不要な場合は設定からOFFにできます。</p>
-    <p>LUCKY SAFEをONにすると、まれに「今回はセーフ」が発生します。通常はOFFです。</p>
-  </section>
-
-  <section class="teacher-panel">
-    <h2>間違えたとき</h2>
-    <p>「1回戻す」で最後の指名を1件取り消せます。「今日の履歴をリセット」で、そのクラスの当日履歴を消せます。</p>
-  </section>
-
-  <section class="teacher-panel">
-    <h2>データ</h2>
-    <p>クラス名、最大出席番号、欠席番号、指名履歴、MISSION候補などは、このブラウザのlocalStorageに保存されます。別端末には自動同期されません。</p>
-    <p>生徒名などの個人情報は登録しない設計です。</p>
-  </section>
-
-  <section class="teacher-panel">
-    <h2>教室でのおすすめ</h2>
-    <p>PCをプロジェクターに映し、中央のDRAW!を押すだけで使えます。キーボード入力欄を選択していない状態では、EnterまたはSpaceでも抽選できます。</p>
-  </section>
+  <div id="manualEnBody" class="hidden">
+    <section class="teacher-panel"><h2>What does this app do?</h2><p>CLASSROOM DRAW randomly picks student numbers for speaking, reading aloud, answering questions, and other classroom activities. It uses student numbers only, so student names do not need to be stored.</p></section>
+    <section class="teacher-panel"><h2>Quick start</h2><ol><li>Open <strong>Teacher controls</strong>, enter the class name and highest student number, then tap <strong>Save this class</strong>.</li><li>If anyone is absent, tap <strong>Set absences</strong> and select their numbers.</li><li>Choose SLOT, ROULETTE, SURVIVAL, or MISSION, then press <strong>DRAW!</strong></li></ol></section>
+    <section class="teacher-panel"><h2>Four draw modes</h2><p><strong>SLOT:</strong> Numbers change rapidly and slow down until one student is picked.</p><p><strong>ROULETTE:</strong> A colorful wheel spins and stops on the selected number.</p><p><strong>SURVIVAL:</strong> The pool gets smaller in stages until one student remains from the FINAL 3.</p><p><strong>MISSION:</strong> After a number is picked, the app also chooses a classroom mission.</p></section>
+    <section class="teacher-panel"><h2>Save multiple classes</h2><p>You can keep separate class names, highest student numbers, absences, pick history, and settings for multiple classes. Use <strong>+ New class</strong> to add another class and the class menu at the top to switch between them.</p></section>
+    <section class="teacher-panel"><h2>Draw the next order</h2><p>After the first student is selected, <strong>Draw next order</strong> randomly chooses how to continue around the classroom: across rows or down columns, window-to-hallway or hallway-to-window, and front-to-back or back-to-front.</p></section>
+    <section class="teacher-panel"><h2>Keep picks fair</h2><p>Turn on <strong>Exclude students already picked</strong> to prioritize numbers that have not yet been selected. After everyone has been picked once, the full eligible pool becomes available again. Absent numbers are always excluded.</p></section>
+    <section class="teacher-panel"><h2>Data</h2><p>Class settings, absences, pick history, and MISSION options are stored in this browser using localStorage. They do not automatically sync to another device. The app is designed not to store student names.</p></section>
+  </div>
 </main>
+<script>
+(function(){
+  const q=new URLSearchParams(location.search).get('lang');
+  let lang=(q==='en'||q==='ja')?q:(localStorage.getItem('classroomDrawLang')==='en'?'en':'ja');
+  function render(){
+    document.documentElement.lang=lang;
+    document.getElementById('manualJaBody').classList.toggle('hidden',lang!=='ja');
+    document.getElementById('manualEnBody').classList.toggle('hidden',lang!=='en');
+    document.getElementById('manualTitle').textContent=lang==='en'?'How to Use':'使い方';
+    document.getElementById('backLink').textContent=lang==='en'?'Back to app':'アプリへ戻る';
+    document.getElementById('manualJa').classList.toggle('active',lang==='ja');
+    document.getElementById('manualEn').classList.toggle('active',lang==='en');
+  }
+  document.getElementById('manualJa').onclick=()=>{lang='ja';localStorage.setItem('classroomDrawLang',lang);render()};
+  document.getElementById('manualEn').onclick=()=>{lang='en';localStorage.setItem('classroomDrawLang',lang);render()};
+  render();
+})();
+</script>
 </body>
 </html>
